@@ -12,16 +12,11 @@
 						http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 						http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-	  <property name="dataSource" ref="dataSource" />
-	  <property name="mapperLocations" value="classpath:ts/mapper/*.xml"/>
-	</bean>
-	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="false">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="jdbc:mysql://localhost:3306/world?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false" />
-		<property name="username" value="your name" />
-		<property name="password" value="your pwd" />
+		<property name="username" value="seesawin" />
+		<property name="password" value="seesaw1688" />
 		<property name="maxActive" value="20" />
 		<property name="maxIdle" value="0" />
 		<property name="maxWait" value="180000" />
@@ -32,5 +27,27 @@
 		<property name="testWhileIdle" value="true" />
 		<property name="validationQuery" value="select 1 from dual" />
 	</bean> 
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	  <property name="dataSource" ref="dataSource" />
+	  <property name="mapperLocations" value="classpath:ts/mapper/*.xml"/>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="QueryAction" class="ts.action.QueryAction">
+		<property name="txManager">
+			<ref bean="txManager" />
+		</property>
+		<property name="sqlSession">
+			<ref bean="sqlSession" />
+		</property>
+	</bean>
 	
 </beans>
